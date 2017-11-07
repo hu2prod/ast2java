@@ -216,7 +216,7 @@ class @Gen_context
     
     when "Loop"
       """
-      loop {
+      while (true) {
         #{make_tab gen(ast.scope, ctx), '  '};
       }
       """
