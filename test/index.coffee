@@ -99,8 +99,8 @@ describe 'index section', ->
       (x = 5)
     """
 
-  it 'self', ->
-    assert.equal gen(_var('this', 'int')), "self"
+  it 'this', ->
+    assert.equal gen(_var('this', 'int')), "this"
     return
   
   it '1', ->
