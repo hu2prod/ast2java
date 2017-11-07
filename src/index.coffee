@@ -317,7 +317,7 @@ class @Gen_context
       sgnt_string += ")"
       """
       public #{type_recast sgnt_list[0]} #{ast.name}#{sgnt_string} {
-        #{make_tab gen(ast.scope, ctx), '  '}
+        #{make_tab gen(ast.scope, ctx), '  '}#{if ast.scope.list.length then ';' else ''}
       }
       """
     

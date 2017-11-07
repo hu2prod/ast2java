@@ -1273,17 +1273,17 @@ describe 'index section', ->
   it 'Fn_decl empty', ->
     scope = new ast.Scope
     scope.list.push fnd('f', type('function<void>'), [], [])
-    assert.equal gen(scope), "fn f() {\n  \n}"
+    assert.equal gen(scope), "public void f() {\n  \n}"
   
   it 'Fn_decl 1 param', ->
     scope = new ast.Scope
     scope.list.push fnd('f', type('function<void,int>'), ["a"], [])
-    assert.equal gen(scope), "fn f(a:int) {\n  \n}"
+    assert.equal gen(scope), "public void f(int a) {\n  \n}"
   
   it 'Fn_decl 2 params', ->
     scope = new ast.Scope
     scope.list.push fnd('f', type('function<void,float,bool>'), "ab", [])
-    assert.equal gen(scope), "fn f(a:float, b:bool) {\n  \n}"
+    assert.equal gen(scope), "public void f(float a, bool b) {\n  \n}"
     
   it 'Fn_decl return', ->
     scope = new ast.Scope
@@ -1291,8 +1291,8 @@ describe 'index section', ->
     ret.t = ci "1"
     scope.list.push fnd('f', type('function<int>'), [], [ret])
     assert.equal gen(scope), '''
-      fn f() -> int {
-        return (1)
+      public int f() {
+        return (1);
       }
     '''
   
@@ -1302,8 +1302,8 @@ describe 'index section', ->
     ret.t = ci "1"
     scope.list.push fnd('f', type('function<int,float,bool>'), "ab", [ret])
     assert.equal gen(scope), '''
-      fn f(a:float, b:bool) -> int {
-        return (1)
+      public int f(float a, bool b) {
+        return (1);
       }
     '''
   
