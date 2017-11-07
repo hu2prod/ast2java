@@ -74,7 +74,7 @@ module = @
   BOOL_NOT: (a)->"!(#{a})"
   BIT_NOT : (a)->"!(#{a})"
   MINUS   : (a)->"-(#{a})"
-  PLUS    : (a)->"#{a}.parse::<f32>().unwrap()"
+  PLUS    : (a)->"Float.parseFloat(#{a})"
 
 recast_hash =
   'bool'  : 'bool'

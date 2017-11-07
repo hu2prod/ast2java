@@ -140,7 +140,7 @@ describe 'index section', ->
     scope = new ast.Scope
     c = cst "string", "3.14"
     scope.list.push un(c, "PLUS")
-    assert.equal gen(scope), '"3.14".parse::<float>().unwrap()'
+    assert.equal gen(scope), 'Float.parseFloat("3.14")'
     return
   
   it '-1', ->
