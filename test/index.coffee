@@ -96,7 +96,7 @@ describe 'index section', ->
     scope.validate()
     assert.equal gen(scope), """
       int x;
-      (x = 5)
+      x = 5
     """
 
   it 'this', ->
@@ -172,7 +172,7 @@ describe 'index section', ->
     scope.list.push un(a, "RET_INC")
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {let __copy_a = a; a += 1; __copy_a}
     """
   
@@ -184,7 +184,7 @@ describe 'index section', ->
     scope.list.push un(a, "RET_DEC")
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {let __copy_a = a; a -= 1; __copy_a}
     """
   
@@ -196,7 +196,7 @@ describe 'index section', ->
     scope.list.push un(a, "INC_RET")
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a += 1; a}
     """
   
@@ -208,7 +208,7 @@ describe 'index section', ->
     scope.list.push un(a, "DEC_RET")
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a -= 1; a}
     """
   
@@ -411,7 +411,7 @@ describe 'index section', ->
     scope.list.push bin(a, "ASS_ADD", c)
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a += 1; a}
     """
   
@@ -491,7 +491,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a %= 3; a}
     """
   
@@ -511,7 +511,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a = (a as int).pow(2 as u32); a}
     """
   
@@ -591,7 +591,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a &= 3; a}
     """
   
@@ -611,7 +611,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a |= 3; a}
     """
   
@@ -631,7 +631,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 5);
+      a = 5;
       {a ^= 3; a}
     """
   
@@ -651,7 +651,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       bool a;
-      (a = true);
+      a = true;
       {a &= false; a}
     """
   
@@ -671,7 +671,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       bool a;
-      (a = true);
+      a = true;
       {a |= false; a}
     """
   
@@ -691,7 +691,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       bool a;
-      (a = true);
+      a = true;
       {a ^= false; a}
     """
   
@@ -711,7 +711,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 17);
+      a = 17;
       {a >>= 3; a}
     """
   
@@ -731,7 +731,7 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       int a;
-      (a = 17);
+      a = 17;
       {a <<= 3; a}
     """
   
@@ -752,7 +752,7 @@ describe 'index section', ->
     # This is wrong but makes the difference only for negative numbers
     assert.equal gen(scope), """
       int a;
-      (a = 17);
+      a = 17;
       {a >>= 3; a}
     """
   

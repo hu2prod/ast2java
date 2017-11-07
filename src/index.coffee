@@ -20,7 +20,7 @@ module = @
   SHL : '<<'
   LSR : '>>' # minor flaw
   
-  ASSIGN : '='
+  # ASSIGN : '='
   
   EQ : '=='
   NE : '!='
@@ -30,6 +30,7 @@ module = @
   LTE: '<='
 
 @bin_op_name_cb_map =
+  ASSIGN        : (a, b)-> "#{a} = #{b}"
   ASS_ADD       : (a, b)-> "{#{a} += #{b}; #{a}}"
   ASS_SUB       : (a, b)-> "{#{a} -= #{b}; #{a}}"
   ASS_MUL       : (a, b)-> "{#{a} *= #{b}; #{a}}"
