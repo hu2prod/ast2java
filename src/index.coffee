@@ -83,8 +83,8 @@ recast_hash =
 
 type_recast = (t)->
   t = t.clone()
-  if !t.main = recast_hash[t.main]    # За такий код потрібно яйця відкручувати. Хоч би дужки поставив.
-    throw new Error "Can't recast #{t.main} in Rust"
+  # if !t.main = recast_hash[t.main]    # За такий код потрібно яйця відкручувати. Хоч би дужки поставив.
+  #   throw new Error "Can't recast #{t.main} in Rust"
   for field,k in t.nest_list
     t.nest_list[k] = type_recast field
   for k,field in t.field_hash
