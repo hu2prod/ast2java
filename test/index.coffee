@@ -1043,7 +1043,7 @@ describe 'index section', ->
     scope.list.push t = new ast.Loop
     t.scope.list.push a
     assert.equal gen(scope), '''
-      loop {
+      while (true) {
         1;
       }
     '''
@@ -1057,7 +1057,7 @@ describe 'index section', ->
     t.cond = a
     t.scope.list.push b
     assert.equal gen(scope), '''
-      while true {
+      while (true) {
         1;
       }
     '''
@@ -1092,7 +1092,7 @@ describe 'index section', ->
   it 'for i in [1 .. 10] 1', ()->
     scope = new ast.Scope
     i = var_d('i', scope)
-    a = var_d('a', scope)
+    a = cst "int", "1"
     
     scope.list.push t = new ast.For_range
     t.i = i
@@ -1111,7 +1111,7 @@ describe 'index section', ->
   it 'for i in [1 .. 10] by 2 1', ()->
     scope = new ast.Scope
     i = var_d('i', scope)
-    a = var_d('a', scope)
+    a = cst "int", "1"
     
     scope.list.push t = new ast.For_range
     t.i = i

@@ -244,7 +244,7 @@ class @Gen_context
       ranger = if ast.exclusive then "<" else "<="
       i = gen ast.i, ctx
       """
-      for (#{i} = #{gen ast.a, ctx}; #{i} #{ranger} #{gen ast.b, ctx}; #{i}++) {
+      for (#{i} = #{gen ast.a, ctx}; #{i} #{ranger} #{gen ast.b, ctx}; #{i}#{aux_step}) {
         #{make_tab gen(ast.scope, ctx), '  '};
       }
       """
