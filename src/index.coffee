@@ -309,7 +309,7 @@ class @Gen_context
         sgnt_string += "#{type_recast t} #{arg_list[i]}"
       sgnt_string += ")"
       """
-      public static #{type_recast sgnt_list[0]} #{ast.name}#{sgnt_string} {
+      public #{type_recast sgnt_list[0]} #{ast.name}#{sgnt_string} {
         #{make_tab gen(ast.scope, ctx), '  '}
       }
       """
