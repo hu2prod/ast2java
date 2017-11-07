@@ -76,10 +76,10 @@ module = @
 
 recast_hash =
   'bool'  : 'bool'
-  'int'   : 'i32'
-  'float' : 'f32'
-  'string': '&str'
-  'array' : 'Vec'
+  'int'   : 'int'
+  'float' : 'float'
+  'string': 'String'
+  'array' : 'ArrayList'
 
 type_recast = (t)->
   t = t.clone()
@@ -289,14 +289,15 @@ class @Gen_context
       "panic!(#{gen ast.t, ctx})"
     
     when "Var_decl"
-      "let mut #{ast.name}:#{type_recast ast.type}"
+      "#{type_recast ast.type} #{ast.name}"
     
     when "Class_decl"
       ctx_nest = ctx.mk_nest()
       ctx_nest.in_class = true
       """
-      class #{ast.name}
+      class #{ast.name} {
         #{make_tab gen(ast.scope, ctx_nest), '  '}
+      }
       """
     
     when "Fn_decl"

@@ -95,7 +95,7 @@ describe 'index section', ->
 
     scope.validate()
     assert.equal gen(scope), """
-      let mut x:i32;
+      int x;
       (x = 5)
     """
 
@@ -140,7 +140,7 @@ describe 'index section', ->
     scope = new ast.Scope
     c = cst "string", "3.14"
     scope.list.push un(c, "PLUS")
-    assert.equal gen(scope), '"3.14".parse::<f32>().unwrap()'
+    assert.equal gen(scope), '"3.14".parse::<float>().unwrap()'
     return
   
   it '-1', ->
@@ -171,7 +171,7 @@ describe 'index section', ->
     scope.list.push bin(a, "ASSIGN", c)
     scope.list.push un(a, "RET_INC")
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {let __copy_a = a; a += 1; __copy_a}
     """
@@ -183,7 +183,7 @@ describe 'index section', ->
     scope.list.push bin(a, "ASSIGN", c)
     scope.list.push un(a, "RET_DEC")
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {let __copy_a = a; a -= 1; __copy_a}
     """
@@ -195,7 +195,7 @@ describe 'index section', ->
     scope.list.push bin(a, "ASSIGN", c)
     scope.list.push un(a, "INC_RET")
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a += 1; a}
     """
@@ -207,7 +207,7 @@ describe 'index section', ->
     scope.list.push bin(a, "ASSIGN", c)
     scope.list.push un(a, "DEC_RET")
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a -= 1; a}
     """
@@ -227,7 +227,7 @@ describe 'index section', ->
     op = bin(a, "SUB", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(2 as f32 - 2.2)"
+    assert.equal gen(scope), "(2 as float - 2.2)"
     return
   
   it '2.2 * 2', ->
@@ -237,7 +237,7 @@ describe 'index section', ->
     op = bin(a, "MUL", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(2.2 * 2 as f32)"
+    assert.equal gen(scope), "(2.2 * 2 as float)"
     return
   
   it '5 / 2', ->
@@ -247,7 +247,7 @@ describe 'index section', ->
     op = bin(a, "DIV", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(5 as f32 / 2 as f32)"
+    assert.equal gen(scope), "(5 as float / 2 as float)"
     return
   
   it '5 % 3', ->
@@ -267,7 +267,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "int"
     scope.list.push op
-    assert.equal gen(scope), "(5 as i32).pow(2 as u32)"
+    assert.equal gen(scope), "(5 as int).pow(2 as u32)"
     return
   
   it '5.5 ** 2', ->
@@ -277,7 +277,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(5.5 as f32).powi(2)"
+    assert.equal gen(scope), "(5.5 as float).powi(2)"
     return
   
   it '5 ** 2.5', ->
@@ -287,7 +287,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(5 as f32).powf(2.5)"
+    assert.equal gen(scope), "(5 as float).powf(2.5)"
     return
   
   it '5.5 ** 2.5', ->
@@ -297,7 +297,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(5.5 as f32).powf(2.5)"
+    assert.equal gen(scope), "(5.5 as float).powf(2.5)"
     return
   
   it '2 ** true throws', ->
@@ -410,7 +410,7 @@ describe 'index section', ->
     scope.list.push bin(a, "ASSIGN", b)
     scope.list.push bin(a, "ASS_ADD", c)
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a += 1; a}
     """
@@ -430,8 +430,8 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:f32;
-      (a = 5 as f32);
+      float a;
+      (a = 5 as float);
       {a -= 2.5; a}
     """
   
@@ -450,9 +450,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:f32;
+      float a;
       (a = 5.5);
-      {a *= 2 as f32; a}
+      {a *= 2 as float; a}
     """
   
   it "var a = 5; a /= 2", ->
@@ -470,9 +470,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:f32;
-      (a = 5 as f32);
-      {a /= 2 as f32; a}
+      float a;
+      (a = 5 as float);
+      {a /= 2 as float; a}
     """
   
   it "var a = 5; a %= 3", ->
@@ -490,7 +490,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a %= 3; a}
     """
@@ -510,9 +510,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
-      {a = (a as i32).pow(2 as u32); a}
+      {a = (a as int).pow(2 as u32); a}
     """
   
   it "var a = 5.5; a **= 2", ->
@@ -530,9 +530,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:f32;
+      float a;
       (a = 5.5);
-      {a = (a as f32).powi(2); a}
+      {a = (a as float).powi(2); a}
     """
   
   it "var a = 5; a **= 2.5", ->
@@ -550,9 +550,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:f32;
-      (a = 5 as f32);
-      {a = (a as f32).powf(2.5); a}
+      float a;
+      (a = 5 as float);
+      {a = (a as float).powf(2.5); a}
     """
   
   it "var a = 5.5; a **= 2.5", ->
@@ -570,9 +570,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:f32;
+      float a;
       (a = 5.5);
-      {a = (a as f32).powf(2.5); a}
+      {a = (a as float).powf(2.5); a}
     """
   
   it "var a = 5; a &= 3", ->
@@ -590,7 +590,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a &= 3; a}
     """
@@ -610,7 +610,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a |= 3; a}
     """
@@ -630,7 +630,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 5);
       {a ^= 3; a}
     """
@@ -650,7 +650,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:bool;
+      bool a;
       (a = true);
       {a &= false; a}
     """
@@ -670,7 +670,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:bool;
+      bool a;
       (a = true);
       {a |= false; a}
     """
@@ -690,7 +690,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:bool;
+      bool a;
       (a = true);
       {a ^= false; a}
     """
@@ -710,7 +710,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 17);
       {a >>= 3; a}
     """
@@ -730,7 +730,7 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 17);
       {a <<= 3; a}
     """
@@ -751,7 +751,7 @@ describe 'index section', ->
     
     # This is wrong but makes the difference only for negative numbers
     assert.equal gen(scope), """
-      let mut a:i32;
+      int a;
       (a = 17);
       {a >>= 3; a}
     """
@@ -807,7 +807,7 @@ describe 'index section', ->
   #   op = bin(a, "NE", b)
   #   op.type = new Type "float"
   #   scope.list.push op
-  #   assert.equal gen(scope), "(5 as f32 != 5.5)"
+  #   assert.equal gen(scope), "(5 as float != 5.5)"
   #   return
   
   # it '5.5 <= 5', ->
@@ -817,7 +817,7 @@ describe 'index section', ->
   #   op = bin(a, "LTE", b)
   #   op.type = new Type "float"
   #   scope.list.push op
-  #   assert.equal gen(scope), "(5.5 <= 5 as f32)"
+  #   assert.equal gen(scope), "(5.5 <= 5 as float)"
   #   return
   
   # it '5.5 >= 5.5', ->
@@ -837,7 +837,7 @@ describe 'index section', ->
   #   op = bin(a, "LT", b)
   #   op.type = new Type "float"
   #   scope.list.push op
-  #   assert.equal gen(scope), "((5 as f32) < 5.5)" # Parentheses matter! Won't compile without them
+  #   assert.equal gen(scope), "((5 as float) < 5.5)" # Parentheses matter! Won't compile without them
   #   return
   
   # it '5.5 > 5', ->
@@ -847,7 +847,7 @@ describe 'index section', ->
   #   op = bin(a, "GT", b)
   #   op.type = new Type "float"
   #   scope.list.push op
-  #   assert.equal gen(scope), "(5.5 > 5 as f32)"
+  #   assert.equal gen(scope), "(5.5 > 5 as float)"
   #   return
   
   # it '[]', ->
@@ -1268,12 +1268,12 @@ describe 'index section', ->
   it 'Fn_decl 1 param', ->
     scope = new ast.Scope
     scope.list.push fnd('f', type('function<void,int>'), ["a"], [])
-    assert.equal gen(scope), "fn f(a:i32) {\n  \n}"
+    assert.equal gen(scope), "fn f(a:int) {\n  \n}"
   
   it 'Fn_decl 2 params', ->
     scope = new ast.Scope
     scope.list.push fnd('f', type('function<void,float,bool>'), "ab", [])
-    assert.equal gen(scope), "fn f(a:f32, b:bool) {\n  \n}"
+    assert.equal gen(scope), "fn f(a:float, b:bool) {\n  \n}"
     
   it 'Fn_decl return', ->
     scope = new ast.Scope
@@ -1281,7 +1281,7 @@ describe 'index section', ->
     ret.t = ci "1"
     scope.list.push fnd('f', type('function<int>'), [], [ret])
     assert.equal gen(scope), '''
-      fn f() -> i32 {
+      fn f() -> int {
         return (1)
       }
     '''
@@ -1292,17 +1292,21 @@ describe 'index section', ->
     ret.t = ci "1"
     scope.list.push fnd('f', type('function<int,float,bool>'), "ab", [ret])
     assert.equal gen(scope), '''
-      fn f(a:f32, b:bool) -> i32 {
+      fn f(a:float, b:bool) -> int {
         return (1)
       }
     '''
   
-  # describe 'Class_decl', ()->
-  #   it 'Empty', ()->
-  #     scope = new ast.Scope
-  #     scope.list.push t = new ast.Class_decl
-  #     t.name = 'A'
-  #     assert.equal gen(scope), 'class A\n  '
+  describe 'Class_decl', ()->
+    it 'Empty', ()->
+      scope = new ast.Scope
+      scope.list.push t = new ast.Class_decl
+      t.name = 'A'
+      assert.equal gen(scope), '''
+        class A {
+          
+        }
+        '''
     
   #   it 'Method', ()->
   #     scope = new ast.Scope
