@@ -238,14 +238,17 @@ class @Gen_context
       "continue"
     
     when "For_range"
-      aux_step = ""
+      aux_step = "++"
       if ast.step
-        aux_step = " by #{gen ast.step, ctx}"
-      ranger = if ast.exclusive then "..." else ".."
+        aux_step = " += #{gen ast.step, ctx}"
+      ranger = if ast.exclusive then "<" else "<="
+      i = gen ast.i, ctx
       """
-      for #{gen ast.i, ctx} in [#{gen ast.a, ctx} #{ranger} #{gen ast.b, ctx}]#{aux_step}
-        #{make_tab gen(ast.scope, ctx), '  '}
+      for (#{i} = #{gen ast.a, ctx}; #{i} #{ranger} #{gen ast.b, ctx}; #{i}++) {
+        #{make_tab gen(ast.scope, ctx), '  '};
+      }
       """
+      # for #{gen ast.i, ctx} in [#{gen ast.a, ctx} #{ranger} #{gen ast.b, ctx}]#{aux_step}
     
     when "For_col"
       if ast.t.type.main == 'array'

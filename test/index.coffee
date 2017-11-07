@@ -1071,57 +1071,62 @@ describe 'index section', ->
     assert.equal gen(new ast.Break), 'break'
     return
   # ###################################################################################################
-  it 'for i in [1 ... 10] a'#, ()->
-    # scope = new ast.Scope
-    # i = var_d('i', scope)
-    # a = cst "int", "1"
+  it 'for i in [1 ... 10] 1', ()->
+    scope = new ast.Scope
+    i = var_d('i', scope)
+    a = cst "int", "1"
     
-    # scope.list.push t = new ast.For_range
-    # t.i = i
-    # t.a = ci '1'
-    # t.b = ci '10'
-    # t.scope.list.push a
-    # assert.equal gen(scope), '''
-    #   for i in 1 ... 10 {
-    #     1;
-    #   }
-    # '''
-    # return
+    scope.list.push t = new ast.For_range
+    t.i = i
+    t.a = ci '1'
+    t.b = ci '10'
+    t.scope.list.push a
+    assert.equal gen(scope), '''
+      int i;
+      for (i = 1; i < 10; i++) {
+        1;
+      }
+    '''
+    return
   
-  # it 'for i in [1 .. 10] a', ()->
-  #   scope = new ast.Scope
-  #   i = var_d('i', scope)
-  #   a = var_d('a', scope)
+  it 'for i in [1 .. 10] 1', ()->
+    scope = new ast.Scope
+    i = var_d('i', scope)
+    a = var_d('a', scope)
     
-  #   scope.list.push t = new ast.For_range
-  #   t.i = i
-  #   t.exclusive = false
-  #   t.a = ci '1'
-  #   t.b = ci '10'
-  #   t.scope.list.push a
-  #   assert.equal gen(scope), '''
-  #     for i in [1 .. 10]
-  #       a
-  #   '''
-  #   return
+    scope.list.push t = new ast.For_range
+    t.i = i
+    t.exclusive = false
+    t.a = ci '1'
+    t.b = ci '10'
+    t.scope.list.push a
+    assert.equal gen(scope), '''
+      int i;
+      for (i = 1; i <= 10; i++) {
+        1;
+      }
+    '''
+    return
   
-  # it 'for i in [1 .. 10] by 2 a', ()->
-  #   scope = new ast.Scope
-  #   i = var_d('i', scope)
-  #   a = var_d('a', scope)
+  it 'for i in [1 .. 10] by 2 1', ()->
+    scope = new ast.Scope
+    i = var_d('i', scope)
+    a = var_d('a', scope)
     
-  #   scope.list.push t = new ast.For_range
-  #   t.i = i
-  #   t.exclusive = false
-  #   t.a = ci '1'
-  #   t.b = ci '10'
-  #   t.step = ci '2'
-  #   t.scope.list.push a
-  #   assert.equal gen(scope), '''
-  #     for i in [1 .. 10] by 2
-  #       a
-  #   '''
-  #   return
+    scope.list.push t = new ast.For_range
+    t.i = i
+    t.exclusive = false
+    t.a = ci '1'
+    t.b = ci '10'
+    t.step = ci '2'
+    t.scope.list.push a
+    assert.equal gen(scope), '''
+      int i;
+      for (i = 1; i <= 10; i += 2) {
+        1;
+      }
+    '''
+    return
   # # ###################################################################################################
   # it 'for v in a b', ()->
   #   scope = new ast.Scope
