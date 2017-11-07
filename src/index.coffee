@@ -137,11 +137,11 @@ class @Gen_context
         return module.pow _a, _b, ta, tb
       if ast.op == "ASS_POW"
         return module.ass_pow _a, _b, ta, tb
-      if ast.type?.main == "float"
-        if ta == "int"
-          _a += " as f32"
-        if tb == "int"
-          _b += " as f32"
+      # if ast.type?.main == "float"
+      #   if ta == "int"
+      #     _a += " as f32"
+      #   if tb == "int"
+      #     _b += " as f32"
       if op = module.bin_op_name_map[ast.op]
         "(#{_a} #{op} #{_b})"
       else
