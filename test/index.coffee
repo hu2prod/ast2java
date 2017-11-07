@@ -925,7 +925,7 @@ describe 'index section', ->
   #    stmt
   # ###################################################################################################
   
-  it 'if true {5;}', ->   # Semicolon is important
+  it 'if (true) {5;}', ->
     scope = new ast.Scope
     cond = cst "bool", "true"
     c = cst "int", "5"
@@ -933,13 +933,13 @@ describe 'index section', ->
     t.cond = cond
     t.t.list.push c
     assert.equal gen(scope), '''
-      if true {
+      if (true) {
         5;
       }
     '''
     return
   
-  it 'if true {5;} else {2;}', ->
+  it 'if (true) {5;} else {2;}', ->
     scope = new ast.Scope
     cond = cst "bool", "true"
     c1 = cst "int", "5"
@@ -949,7 +949,7 @@ describe 'index section', ->
     t.t.list.push c1
     t.f.list.push c2
     assert.equal gen(scope), '''
-      if true {
+      if (true) {
         5;
       } else {
         2;
@@ -957,7 +957,7 @@ describe 'index section', ->
     '''
     return
   
-  it 'if true {} else {2;}', ->
+  it 'if (true) {} else {2;}', ->
     scope = new ast.Scope
     cond = cst "bool", "true"
     c2 = cst "int", "2"
@@ -965,7 +965,7 @@ describe 'index section', ->
     t.cond = cond
     t.f.list.push c2
     assert.equal gen(scope), '''
-      if !(true) {
+      if (!(true)) {
         2;
       }
     '''
