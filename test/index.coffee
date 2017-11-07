@@ -1016,21 +1016,26 @@ describe 'index section', ->
   #   '''
   #   return
   
-  it 'switch 0 {1:2} default{3}'#, ->
-    # scope = new ast.Scope
-    # a = cst "int", "0"
-    # b = cst "int", "2"
-    # c = cst "int", "3"
-    # scope.list.push t = new ast.Switch
-    # t.cond = a
-    # t.hash["1"] = b
-    # t.f.list.push c
-    # assert.equal gen(scope), '''
-    #   match 0 {
-    #     1 => {2;}
-    #     _ => {3;}
-    # '''
-    # return
+  it 'switch 0 {1:2} default{3}', ->
+    scope = new ast.Scope
+    a = cst "int", "0"
+    b = cst "int", "2"
+    c = cst "int", "3"
+    scope.list.push t = new ast.Switch
+    t.cond = a
+    t.hash["1"] = b
+    t.f.list.push c
+    assert.equal gen(scope), '''
+      switch (0) {
+        case 1:
+          2;
+          break;
+        default:
+          3;
+          break;
+      }
+    '''
+    return
   # ###################################################################################################
   it 'loop', ->
     scope = new ast.Scope

@@ -199,19 +199,22 @@ class @Gen_context
         if ast.cond.type.main == 'string'
           k = JSON.stringify k
         jl.push """
-        when #{k}
-          #{make_tab gen(v, ctx) or '0', '  '}
+        case #{k}:
+          #{make_tab gen(v, ctx), '  '};
+          break;
         """
       
       if "" != f = gen ast.f, ctx
         jl.push """
-        else
-          #{make_tab f, '  '}
+        default:
+          #{make_tab f, '  '};
+          break;
         """
       
       """
-      switch #{gen ast.cond, ctx}
+      switch (#{gen ast.cond, ctx}) {
         #{join_list jl, '  '}
+      }
       """
     
     when "Loop"
