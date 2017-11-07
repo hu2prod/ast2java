@@ -151,7 +151,7 @@ class @Gen_context
       module.un_op_name_cb_map[ast.op] gen ast.a, ctx
     
     when "Field_access"
-      "(#{gen(ast.t, ctx)}).#{ast.name}"
+      "#{gen(ast.t, ctx)}.#{ast.name}"
     
     when "Fn_call"
       jl = []

@@ -899,7 +899,7 @@ describe 'index section', ->
   #   t.hash.k = a
     
   #   scope.list.push fa(t, 'k', 'int')
-  #   assert.equal gen(scope), '({"k": a}).k'
+  #   assert.equal gen(scope), '{"k": a}.k'
   #   return
   
   it 'f()', ->
