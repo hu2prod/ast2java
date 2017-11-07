@@ -908,7 +908,7 @@ describe 'index section', ->
     f.name = "f"
     scope.list.push t = new ast.Fn_call
     t.fn = f
-    assert.equal gen(scope), '(f)()'
+    assert.equal gen(scope), 'f()'
     return
   
   it 'f(5)', ->
@@ -919,7 +919,7 @@ describe 'index section', ->
     scope.list.push t = new ast.Fn_call
     t.fn = f
     t.arg_list.push c
-    assert.equal gen(scope), '(f)(5)'
+    assert.equal gen(scope), 'f(5)'
     return
   # ###################################################################################################
   #    stmt
