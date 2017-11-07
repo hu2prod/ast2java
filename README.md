@@ -1,2 +1,2 @@
-# ast2rust
-AST to Rust code generator
+# ast2java
+AST to Java code generator

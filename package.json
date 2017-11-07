@@ -1,7 +1,7 @@
 {
-  "name": "ast2rust",
+  "name": "ast2java",
   "version": "1.0.0",
-  "description": "AST to Rust",
+  "description": "AST to Java",
   "main": "lib/index.js",
   "scripts": {
     "install": "iced -o lib -c src",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hu2prod/ast2rust.git"
+    "url": "git+https://github.com/hu2prod/ast2java.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hu2prod/ast2rust/issues"
+    "url": "https://github.com/hu2prod/ast2java/issues"
   },
-  "homepage": "https://github.com/hu2prod/ast2rust#readme",
+  "homepage": "https://github.com/hu2prod/ast2java#readme",
   "devDependencies": {
     "ast4gen": "github:hu2prod/ast4gen",
     "coveralls": "^2.11.16",
