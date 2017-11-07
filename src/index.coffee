@@ -174,19 +174,19 @@ class @Gen_context
       f = gen ast.f, ctx
       if f == ''
         """
-        if #{cond} {
+        if (#{cond}) {
           #{make_tab t, '  '};
         }
         """
       else if t == ''
         """
-        if !(#{cond}) {
+        if (!(#{cond})) {
           #{make_tab f, '  '};
         }
         """
       else
         """
-        if #{cond} {
+        if (#{cond}) {
           #{make_tab t, '  '};
         } else {
           #{make_tab f, '  '};
