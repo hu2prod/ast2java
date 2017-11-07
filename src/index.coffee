@@ -30,6 +30,7 @@ module = @
   LTE: '<='
 
 @bin_op_name_cb_map =
+  POW           : (a, b)-> "Math.pow(#{a}, #{b})"
   ASSIGN        : (a, b)-> "#{a} = #{b}"
   ASS_ADD       : (a, b)-> "{#{a} += #{b}; #{a}}"
   ASS_SUB       : (a, b)-> "{#{a} -= #{b}; #{a}}"
@@ -46,24 +47,24 @@ module = @
   ASS_SHL       : (a, b)-> "{#{a} <<= #{b}; #{a}}"
   ASS_LSR       : (a, b)-> "{#{a} >>= #{b}; #{a}}" # minor flaw
 
-@pow = (a, b, ta, tb) ->
-  if tb == "int"
-    if ta == "int"
-      "(#{a} as i32).pow(#{b} as u32)"
-    else if ta == "float"
-      "(#{a} as f32).powi(#{b})"
-    else
-      throw new Error "Invalid base type for POW: #{ta}"
-  else if tb == "float"
-    if ta == "int" or ta == "float"
-      "(#{a} as f32).powf(#{b})"
-    else
-      throw new Error "Invalid base type for POW: #{ta}"
-  else
-    throw new Error "Invalid exponent type for POW: #{tb}"
+# @pow = (a, b, ta, tb) ->
+#   if tb == "int"
+#     if ta == "int"
+#       "(#{a} as i32).pow(#{b} as u32)"
+#     else if ta == "float"
+#       "(#{a} as f32).powi(#{b})"
+#     else
+#       throw new Error "Invalid base type for POW: #{ta}"
+#   else if tb == "float"
+#     if ta == "int" or ta == "float"
+#       "(#{a} as f32).powf(#{b})"
+#     else
+#       throw new Error "Invalid base type for POW: #{ta}"
+#   else
+#     throw new Error "Invalid exponent type for POW: #{tb}"
 
-@ass_pow = (a, b, ta, tb) ->
-  "{#{a} = #{module.pow a, b, ta, tb}; a}"
+# @ass_pow = (a, b, ta, tb) ->
+#   "{#{a} = #{module.pow a, b, ta, tb}; a}"
 
 @un_op_name_cb_map =
   INC_RET : (a)->"{#{a} += 1; #{a}}"
@@ -133,10 +134,10 @@ class @Gen_context
       _b = gen ast.b, ctx
       ta = ast.a.type?.main
       tb = ast.b.type?.main
-      if ast.op == "POW"
-        return module.pow _a, _b, ta, tb
-      if ast.op == "ASS_POW"
-        return module.ass_pow _a, _b, ta, tb
+      # if ast.op == "POW"
+      #   return module.pow _a, _b, ta, tb
+      # if ast.op == "ASS_POW"
+      #   return module.ass_pow _a, _b, ta, tb
       # if ast.type?.main == "float"
       #   if ta == "int"
       #     _a += " as f32"
