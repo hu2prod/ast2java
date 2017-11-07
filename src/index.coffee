@@ -77,7 +77,7 @@ module = @
   PLUS    : (a)->"Float.parseFloat(#{a})"
 
 recast_hash =
-  'bool'  : 'bool'
+  'bool'  : 'boolean'
   'int'   : 'int'
   'float' : 'float'
   'string': 'String'
