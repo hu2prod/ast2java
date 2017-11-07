@@ -123,7 +123,7 @@ class @Gen_context
     
     when "Var"
       if ast.name == 'this'
-        'self'
+        'this'
       else
         ast.name
     
