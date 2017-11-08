@@ -346,7 +346,7 @@ class @Gen_context
           if ast.k
             aux_k = "#{gen ast.k, ctx} = #{pair}.getKey()"
           if ast.v
-            aux_v = "#{gen ast.k, ctx} = #{pair}.getValue()"
+            aux_v = "#{gen ast.v, ctx} = #{pair}.getValue()"
           
           """
           for(Map.Entry<int, #{}> #{pair} : #{gen ast.t, ctx}) {
