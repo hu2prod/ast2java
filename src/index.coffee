@@ -169,10 +169,21 @@ class @Gen_context
       #     _a += " as f32"
       #   if tb == "int"
       #     _b += " as f32"
-      if op = module.bin_op_name_map[ast.op]
-        "(#{_a} #{op} #{_b})"
-      else
-        module.bin_op_name_cb_map[ast.op](_a, _b)
+      ret = ""
+      loop
+        if ast.op == 'INDEX_ACCESS'
+          switch ta
+            when "array"
+              "(#{_a})[#{_b}]"
+            else
+              throw new Error "can't compile INDEX_ACCESS for '#{ast.a.type}'"
+          break
+        ret = if op = module.bin_op_name_map[ast.op]
+          "(#{_a} #{op} #{_b})"
+        else
+          module.bin_op_name_cb_map[ast.op](_a, _b)
+        break
+      ret
     
     when "Un_op"
       module.un_op_name_cb_map[ast.op] gen ast.a, ctx
