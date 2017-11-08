@@ -301,39 +301,63 @@ class @Gen_context
       # for #{gen ast.i, ctx} in [#{gen ast.a, ctx} #{ranger} #{gen ast.b, ctx}]#{aux_step}
     
     when "For_col"
-      if ast.t.type.main == 'array'
-        if ast.v
-          value = gen ast.v, ctx
+      switch ast.t.type.main
+        when 'array'
+          uid = ctx.var_uid++
+          if ast.v
+            value = gen ast.v, ctx
+          else
+            value = "_v_#{uid}"
+          
+          aux_init = ""
+          aux_incr = ""
+          if ast.k
+            iterator = "#{gen ast.k, ctx}"
+            aux_init = "#{iterator} = -1;"
+            aux_incr = "#{iterator}++;"
+          """
+          #{aux_init}
+          for(#{type_recast ast.t.type.nest_list[0]} _#{value} : #{gen ast.t, ctx}) {
+            #{aux_incr}
+            #{value} = _#{value};
+            #{make_tab gen(ast.scope, ctx), '  '}
+          }
+          """
+        when 'hash'
+          throw new Error "NOT IMPLEMENTED"
+          # if ast.k
+          #   aux_k = gen ast.k, ctx
+          # else
+          #   aux_k = "_skip"
+          # 
+          # aux_v = ""
+          # if ast.v
+          #   aux_v = ",#{gen ast.v, ctx}"
+          # """
+          # for #{aux_k}#{aux_v} of #{gen ast.t, ctx}
+          #   #{make_tab gen(ast.scope, ctx), '  '}
+          # """
+        when 'hash_int'
+          uid = ctx.var_uid++
+          pair = "_pair_#{uid}"
+          
+          aux_k = ""
+          aux_v = ""
+          if ast.k
+            aux_k = "#{gen ast.k, ctx} = #{pair}.getKey()"
+          if ast.v
+            aux_v = "#{gen ast.k, ctx} = #{pair}.getValue()"
+          
+          """
+          for(Map.Entry<int, #{}> #{pair} : #{gen ast.t, ctx}) {
+            #{aux_k}
+            #{aux_v}
+            #{make_tab gen(ast.scope, ctx), '  '}
+          }
+          """
+      
         else
-          value = "_v_#{ctx.var_uid++}"
-        
-        aux_init = ""
-        aux_incr = ""
-        if ast.k
-          iterator = "#{gen ast.k, ctx}"
-          aux_init = "#{iterator} = -1;"
-          aux_incr = "#{iterator}++;"
-        """
-        #{aux_init}
-        for(#{type_recast ast.t.type.nest_list[0]} _#{value} : #{gen ast.t, ctx}) {
-          #{aux_incr}
-          #{value} = _#{value};
-          #{make_tab gen(ast.scope, ctx), '  '}
-        }
-        """
-      else
-        if ast.k
-          aux_k = gen ast.k, ctx
-        else
-          aux_k = "_skip"
-        
-        aux_v = ""
-        if ast.v
-          aux_v = ",#{gen ast.v, ctx}"
-        """
-        for #{aux_k}#{aux_v} of #{gen ast.t, ctx}
-          #{make_tab gen(ast.scope, ctx), '  '}
-        """
+          throw new Error "unimplemented For_col '#{ast.t.type}'"
     
     when "Ret"
       aux = ""
