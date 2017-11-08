@@ -257,36 +257,33 @@ class @Gen_context
     
     when "For_col"
       if ast.t.type.main == 'array'
-        uid = ctx.var_uid++
-        aux_init = ""
-        list = "_list_#{uid}"
-        aux_value_set = ""
         if ast.v
           value = gen ast.v, ctx
-          aux_value_set = "#{value} = #{list}.get(#{iterator});"
+        else
+          throw new Error "not supported"
+          # value = "_v_#{ctx.var_uid+}"
         
-        aux_type = ""
+        aux_init = ""
+        aux_incr = ""
         if ast.k
           iterator = "#{gen ast.k, ctx}"
-        else
-          iterator = "_i_#{uid}"
-          aux_type = "int "
-        # """
-        # #{aux_init}
-        # for(#{type_recast ast.t.type.nest_list[0]} #{value} : #{gen ast.t, ctx}) {
-        #   #{aux_incr}
-        #   #{make_tab gen(ast.scope, ctx), '  '}
-        # }
-        # """
-        # NOTE NOT optimal
+          aux_init = "#{iterator} = -1"
+          aux_incr = "#{iterator}++"
+        # else
+          # iterator = "_i_#{ctx.var_uid+}"
         """
         #{aux_init}
-        #{type_recast ast.t.type} #{list} = #{gen ast.t, ctx}
-        for (#{aux_type}#{iterator} = 0; #{iterator} < #{list}.size(); #{iterator}++) {
-          #{aux_value_set}
+        for(#{value} : #{gen ast.t, ctx}) {
+          #{aux_incr}
           #{make_tab gen(ast.scope, ctx), '  '}
         }
         """
+        # """
+        # for (#{iterator} = 0; #{iterator} < list.size(); #{iterator}++) {
+        #   #{value} = list.get(#{iterator});
+        #   #{make_tab gen(ast.scope, ctx), '  '}
+        # }
+        # """
       else
         if ast.k
           aux_k = gen ast.k, ctx
