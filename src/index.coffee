@@ -12,15 +12,33 @@ module = @
   BIT_OR  : '|'
   BIT_XOR : '^'
   
-  BOOL_AND : '&'
-  BOOL_OR  : '|'
+  BOOL_AND : '&&'
+  BOOL_OR  : '||'
   BOOL_XOR : '^'
   
   SHR : '>>'
   SHL : '<<'
-  LSR : '>>' # minor flaw
+  LSR : '>>>'
   
   # ASSIGN : '='
+  
+  ASS_ADD : '+='
+  ASS_SUB : '-='
+  ASS_MUL : '*='
+  ASS_DIV : '/='
+  ASS_MOD : '%='
+  
+  ASS_BIT_AND : '&='
+  ASS_BIT_OR  : '|='
+  ASS_BIT_XOR : '^='
+  
+  ASS_BOOL_AND : '&&='
+  ASS_BOOL_OR  : '||='
+  ASS_BOOL_XOR : '^='
+  
+  ASS_SHR : '>>='
+  ASS_SHL : '<<='
+  ASS_LSR : '>>>='
   
   EQ : '=='
   NE : '!='
@@ -32,20 +50,20 @@ module = @
 @bin_op_name_cb_map =
   POW           : (a, b)-> "Math.pow(#{a}, #{b})"
   ASSIGN        : (a, b)-> "#{a} = #{b}"
-  ASS_ADD       : (a, b)-> "{#{a} += #{b}; #{a}}"
-  ASS_SUB       : (a, b)-> "{#{a} -= #{b}; #{a}}"
-  ASS_MUL       : (a, b)-> "{#{a} *= #{b}; #{a}}"
-  ASS_DIV       : (a, b)-> "{#{a} /= #{b}; #{a}}"
-  ASS_MOD       : (a, b)-> "{#{a} %= #{b}; #{a}}"
-  ASS_BIT_AND   : (a, b)-> "{#{a} &= #{b}; #{a}}"
-  ASS_BIT_OR    : (a, b)-> "{#{a} |= #{b}; #{a}}"
-  ASS_BIT_XOR   : (a, b)-> "{#{a} ^= #{b}; #{a}}"
-  ASS_BOOL_AND  : (a, b)-> "{#{a} &= #{b}; #{a}}"
-  ASS_BOOL_OR   : (a, b)-> "{#{a} |= #{b}; #{a}}"
-  ASS_BOOL_XOR  : (a, b)-> "{#{a} ^= #{b}; #{a}}"
-  ASS_SHR       : (a, b)-> "{#{a} >>= #{b}; #{a}}"
-  ASS_SHL       : (a, b)-> "{#{a} <<= #{b}; #{a}}"
-  ASS_LSR       : (a, b)-> "{#{a} >>= #{b}; #{a}}" # minor flaw
+  # ASS_ADD       : (a, b)-> "{#{a} += #{b}; #{a}}"
+  # ASS_SUB       : (a, b)-> "{#{a} -= #{b}; #{a}}"
+  # ASS_MUL       : (a, b)-> "{#{a} *= #{b}; #{a}}"
+  # ASS_DIV       : (a, b)-> "{#{a} /= #{b}; #{a}}"
+  # ASS_MOD       : (a, b)-> "{#{a} %= #{b}; #{a}}"
+  # ASS_BIT_AND   : (a, b)-> "{#{a} &= #{b}; #{a}}"
+  # ASS_BIT_OR    : (a, b)-> "{#{a} |= #{b}; #{a}}"
+  # ASS_BIT_XOR   : (a, b)-> "{#{a} ^= #{b}; #{a}}"
+  # ASS_BOOL_AND  : (a, b)-> "{#{a} &= #{b}; #{a}}"
+  # ASS_BOOL_OR   : (a, b)-> "{#{a} |= #{b}; #{a}}"
+  # ASS_BOOL_XOR  : (a, b)-> "{#{a} ^= #{b}; #{a}}"
+  # ASS_SHR       : (a, b)-> "{#{a} >>= #{b}; #{a}}"
+  # ASS_SHL       : (a, b)-> "{#{a} <<= #{b}; #{a}}"
+  # ASS_LSR       : (a, b)-> "{#{a} >>= #{b}; #{a}}" # minor flaw
 
 # @pow = (a, b, ta, tb) ->
 #   if tb == "int"
