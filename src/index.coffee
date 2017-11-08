@@ -256,7 +256,6 @@ class @Gen_context
       # for #{gen ast.i, ctx} in [#{gen ast.a, ctx} #{ranger} #{gen ast.b, ctx}]#{aux_step}
     
     when "For_col"
-      var_uid
       if ast.t.type.main == 'array'
         if ast.v
           value = gen ast.v, ctx
