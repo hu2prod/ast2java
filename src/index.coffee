@@ -291,8 +291,9 @@ class @Gen_context
           # iterator = "_i_#{ctx.var_uid+}"
         """
         #{aux_init}
-        for(#{value} : #{gen ast.t, ctx}) {
+        for(#{type_recast ast.t.type.nest_list[0]} _#{value} : #{gen ast.t, ctx}) {
           #{aux_incr}
+          #{value} = _#{value}
           #{make_tab gen(ast.scope, ctx), '  '}
         }
         """
