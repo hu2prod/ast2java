@@ -112,7 +112,7 @@ describe 'index section', ->
   it '1.1', ->
     scope = new ast.Scope
     scope.list.push cst "float", "1.1"
-    assert.equal gen(scope), "1.1"
+    assert.equal gen(scope), "1.1f"
     return
   
   it '"1"', ->
@@ -227,7 +227,7 @@ describe 'index section', ->
     op = bin(a, "SUB", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(2 as float - 2.2)"
+    assert.equal gen(scope), "(2 - 2.2f)"
     return
   
   it '2.2 * 2', ->
@@ -237,7 +237,7 @@ describe 'index section', ->
     op = bin(a, "MUL", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(2.2 * 2 as float)"
+    assert.equal gen(scope), "(2.2f * 2)"
     return
   
   it '5 / 2', ->
@@ -247,7 +247,17 @@ describe 'index section', ->
     op = bin(a, "DIV", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "(5 as float / 2 as float)"
+    assert.equal gen(scope), "(5.0f / 2)"
+    return
+  
+  it '5 // 2 int', ->
+    scope = new ast.Scope
+    a = cst "int", "5"
+    b = cst "int", "2"
+    op = bin(a, "DIV", b)
+    op.type = new Type "float"
+    scope.list.push op
+    assert.equal gen(scope), "(5 / 2)"
     return
   
   it '5 % 3', ->
@@ -277,7 +287,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "Math.pow(5.5, 2)"
+    assert.equal gen(scope), "Math.pow(5.5f, 2)"
     return
   
   it '5 ** 2.5', ->
@@ -287,7 +297,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "Math.pow(5, 2.5)"
+    assert.equal gen(scope), "Math.pow(5, 2.5f)"
     return
   
   it '5.5 ** 2.5', ->
@@ -297,7 +307,7 @@ describe 'index section', ->
     op = bin(a, "POW", b)
     op.type = new Type "float"
     scope.list.push op
-    assert.equal gen(scope), "Math.pow(5.5, 2.5)"
+    assert.equal gen(scope), "Math.pow(5.5f, 2.5f)"
     return
     
   # it '2 ** true throws', ->
@@ -330,23 +340,23 @@ describe 'index section', ->
   #   assert.throws(-> gen scope)
   #   return
   
-  it 'true & false', ->
+  it 'true && false', ->
     scope = new ast.Scope
     l = cst "bool", "true"
     r = cst "bool", "false"
     scope.list.push bin(l, "BOOL_AND", r)
-    assert.equal gen(scope), "(true & false)"
+    assert.equal gen(scope), "(true && false)"
     return
   
-  it 'true | false', ->
+  it 'true || false', ->
     scope = new ast.Scope
     l = cst "bool", "true"
     r = cst "bool", "false"
     scope.list.push bin(l, "BOOL_OR", r)
-    assert.equal gen(scope), "(true | false)"
+    assert.equal gen(scope), "(true || false)"
     return
   
-  it 'true ^ false', ->
+  it 'true ^^ false', ->
     scope = new ast.Scope
     l = cst "bool", "true"
     r = cst "bool", "false"
@@ -399,7 +409,7 @@ describe 'index section', ->
     l = cst "int", "17"
     r = cst "int", "3"
     scope.list.push bin(l, "LSR", r)
-    assert.equal gen(scope), "(17 >> 3)" # This is wrong but makes the difference only for negative numbers
+    assert.equal gen(scope), "(17 >>> 3)"
     return
   
   it "var a = 5; a += 1", ->
@@ -412,7 +422,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a += 1; a}
+      a += 1
     """
   
   it "var a = 5; a -= 2.5", ->
@@ -431,8 +441,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5 as float);
-      {a -= 2.5; a}
+      a = 5;
+      a -= 2.5f
     """
   
   it "var a = 5.5; a *= 2", ->
@@ -451,8 +461,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5.5);
-      {a *= 2 as float; a}
+      a = 5.5f;
+      a *= 2
     """
   
   it "var a = 5; a /= 2", ->
@@ -471,8 +481,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5 as float);
-      {a /= 2 as float; a}
+      a = 5;
+      a /= 2
     """
   
   it "var a = 5; a %= 3", ->
@@ -492,7 +502,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a %= 3; a}
+      a %= 3
     """
   
   it "var a = 5; a **= 2", ->
@@ -592,7 +602,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a &= 3; a}
+      a &= 3
     """
   
   it "var a = 5; a |= 3", ->
@@ -612,7 +622,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a |= 3; a}
+      a |= 3
     """
   
   it "var a = 5; a ^= 3", ->
@@ -632,7 +642,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a ^= 3; a}
+      a ^= 3
     """
   
   it "var a = true; a &= false", ->
@@ -650,9 +660,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      bool a;
+      boolean a;
       a = true;
-      {a &= false; a}
+      a &= false
     """
   
   it "var a = true; a |= false", ->
@@ -670,9 +680,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      bool a;
+      boolean a;
       a = true;
-      {a |= false; a}
+      a |= false
     """
   
   it "var a = true; a ^= false", ->
@@ -690,9 +700,9 @@ describe 'index section', ->
     scope.list.push op
     
     assert.equal gen(scope), """
-      bool a;
+      boolean a;
       a = true;
-      {a ^= false; a}
+      a ^= false
     """
   
   it "var a = 17; a >>= 3", ->
@@ -712,7 +722,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 17;
-      {a >>= 3; a}
+      a >>= 3
     """
   
   it "var a = 17; a <<= 3", ->
@@ -732,7 +742,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 17;
-      {a <<= 3; a}
+      a <<= 3
     """
   
   it "var a = 17; a >>>= 3", ->
@@ -749,11 +759,10 @@ describe 'index section', ->
     op.type = new Type "int"
     scope.list.push op
     
-    # This is wrong but makes the difference only for negative numbers
     assert.equal gen(scope), """
       int a;
       a = 17;
-      {a >>= 3; a}
+      a >>>= 3
     """
   
   it '5 >= 5', ->
@@ -767,7 +776,7 @@ describe 'index section', ->
     scope = new ast.Scope
     l = r = cst "float", "5.5"
     scope.list.push bin(l, "LTE", r)
-    assert.equal gen(scope), "(5.5 <= 5.5)"
+    assert.equal gen(scope), "(5.5f <= 5.5f)"
     return
   
   it 'true == true', ->
@@ -1283,7 +1292,7 @@ describe 'index section', ->
   it 'Fn_decl 2 params', ->
     scope = new ast.Scope
     scope.list.push fnd('f', type('function<void,float,bool>'), "ab", [])
-    assert.equal gen(scope), "public void f(float a, bool b) {\n  \n}"
+    assert.equal gen(scope), "public void f(float a, boolean b) {\n  \n}"
     
   it 'Fn_decl return', ->
     scope = new ast.Scope
@@ -1302,7 +1311,7 @@ describe 'index section', ->
     ret.t = ci "1"
     scope.list.push fnd('f', type('function<int,float,bool>'), "ab", [ret])
     assert.equal gen(scope), '''
-      public int f(float a, bool b) {
+      public int f(float a, boolean b) {
         return (1);
       }
     '''
