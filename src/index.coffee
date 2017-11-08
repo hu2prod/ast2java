@@ -22,23 +22,23 @@ module = @
   
   # ASSIGN : '='
   
-  ASS_ADD : '+='
-  ASS_SUB : '-='
-  ASS_MUL : '*='
-  ASS_DIV : '/='
-  ASS_MOD : '%='
+  ADD : '+'
+  SUB : '-'
+  MUL : '*'
+  DIV : '/'
+  MOD : '%'
   
-  ASS_BIT_AND : '&='
-  ASS_BIT_OR  : '|='
-  ASS_BIT_XOR : '^='
+  BIT_AND : '&'
+  BIT_OR  : '|'
+  BIT_XOR : '^'
   
-  ASS_BOOL_AND : '&&='
-  ASS_BOOL_OR  : '||='
-  ASS_BOOL_XOR : '^='
+  BOOL_AND : '&&'
+  BOOL_OR  : '||'
+  BOOL_XOR : '^'
   
-  ASS_SHR : '>>='
-  ASS_SHL : '<<='
-  ASS_LSR : '>>>='
+  SHR : '>>'
+  SHL : '<<'
+  LSR : '>>>'
   
   EQ : '=='
   NE : '!='
@@ -50,20 +50,20 @@ module = @
 @bin_op_name_cb_map =
   POW           : (a, b)-> "Math.pow(#{a}, #{b})"
   ASSIGN        : (a, b)-> "#{a} = #{b}"
-  # ASS_ADD       : (a, b)-> "{#{a} += #{b}; #{a}}"
-  # ASS_SUB       : (a, b)-> "{#{a} -= #{b}; #{a}}"
-  # ASS_MUL       : (a, b)-> "{#{a} *= #{b}; #{a}}"
-  # ASS_DIV       : (a, b)-> "{#{a} /= #{b}; #{a}}"
-  # ASS_MOD       : (a, b)-> "{#{a} %= #{b}; #{a}}"
-  # ASS_BIT_AND   : (a, b)-> "{#{a} &= #{b}; #{a}}"
-  # ASS_BIT_OR    : (a, b)-> "{#{a} |= #{b}; #{a}}"
-  # ASS_BIT_XOR   : (a, b)-> "{#{a} ^= #{b}; #{a}}"
-  # ASS_BOOL_AND  : (a, b)-> "{#{a} &= #{b}; #{a}}"
-  # ASS_BOOL_OR   : (a, b)-> "{#{a} |= #{b}; #{a}}"
-  # ASS_BOOL_XOR  : (a, b)-> "{#{a} ^= #{b}; #{a}}"
-  # ASS_SHR       : (a, b)-> "{#{a} >>= #{b}; #{a}}"
-  # ASS_SHL       : (a, b)-> "{#{a} <<= #{b}; #{a}}"
-  # ASS_LSR       : (a, b)-> "{#{a} >>= #{b}; #{a}}" # minor flaw
+  ASS_ADD       : (a, b)-> "#{a} += #{b}"
+  ASS_SUB       : (a, b)-> "#{a} -= #{b}"
+  ASS_MUL       : (a, b)-> "#{a} *= #{b}"
+  ASS_DIV       : (a, b)-> "#{a} /= #{b}"
+  ASS_MOD       : (a, b)-> "#{a} %= #{b}"
+  ASS_BIT_AND   : (a, b)-> "#{a} &= #{b}"
+  ASS_BIT_OR    : (a, b)-> "#{a} |= #{b}"
+  ASS_BIT_XOR   : (a, b)-> "#{a} ^= #{b}"
+  ASS_BOOL_AND  : (a, b)-> "#{a} &= #{b}"
+  ASS_BOOL_OR   : (a, b)-> "#{a} |= #{b}"
+  ASS_BOOL_XOR  : (a, b)-> "#{a} ^= #{b}"
+  ASS_SHR       : (a, b)-> "#{a} >>= #{b}"
+  ASS_SHL       : (a, b)-> "#{a} <<= #{b}"
+  ASS_LSR       : (a, b)-> "#{a} >>= #{b}" # minor flaw
 
 # @pow = (a, b, ta, tb) ->
 #   if tb == "int"
@@ -114,7 +114,6 @@ type_recast = (t)->
 
 class @Gen_context
   in_class : false
-  var_uid : 0
   mk_nest : ()->
     t = new module.Gen_context
     t
@@ -275,35 +274,17 @@ class @Gen_context
     
     when "For_col"
       if ast.t.type.main == 'array'
-        uid = ctx.var_uid++
-        aux_init = ""
-        list = "_list_#{uid}"
-        aux_value_set = ""
         if ast.v
-          value = gen ast.v, ctx
-          aux_value_set = "#{value} = #{list}.get(#{iterator});"
-        
-        aux_type = ""
-        if ast.k
-          iterator = "#{gen ast.k, ctx}"
+          aux_v = gen ast.v, ctx
         else
-          iterator = "_i_#{uid}"
-          aux_type = "int "
-        # """
-        # #{aux_init}
-        # for(#{type_recast ast.t.type.nest_list[0]} #{value} : #{gen ast.t, ctx}) {
-        #   #{aux_incr}
-        #   #{make_tab gen(ast.scope, ctx), '  '}
-        # }
-        # """
-        # NOTE NOT optimal
+          aux_v = "_skip"
+        
+        aux_k = ""
+        if ast.k
+          aux_k = ",#{gen ast.k, ctx}"
         """
-        #{aux_init}
-        #{type_recast ast.t.type} #{list} = #{gen ast.t, ctx}
-        for (#{aux_type}#{iterator} = 0; #{iterator} < #{list}.size(); #{iterator}++) {
-          #{aux_value_set}
+        for #{aux_v}#{aux_k} in #{gen ast.t, ctx}
           #{make_tab gen(ast.scope, ctx), '  '}
-        }
         """
       else
         if ast.k
