@@ -172,7 +172,7 @@ class @Gen_context
       ret = ""
       loop
         if ast.op == 'INDEX_ACCESS'
-          switch ta
+          ret = switch ta
             when "array"
               "(#{_a})[#{_b}]"
             else
