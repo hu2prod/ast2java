@@ -285,15 +285,15 @@ class @Gen_context
         aux_incr = ""
         if ast.k
           iterator = "#{gen ast.k, ctx}"
-          aux_init = "#{iterator} = -1"
-          aux_incr = "#{iterator}++"
+          aux_init = "#{iterator} = -1;"
+          aux_incr = "#{iterator}++;"
         # else
           # iterator = "_i_#{ctx.var_uid+}"
         """
         #{aux_init}
         for(#{type_recast ast.t.type.nest_list[0]} _#{value} : #{gen ast.t, ctx}) {
           #{aux_incr}
-          #{value} = _#{value}
+          #{value} = _#{value};
           #{make_tab gen(ast.scope, ctx), '  '}
         }
         """
