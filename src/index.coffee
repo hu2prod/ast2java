@@ -322,7 +322,7 @@ class @Gen_context
           for(#{type_recast ast.t.type.nest_list[0]} _#{value} : #{gen ast.t, ctx}) {
             #{aux_incr}
             #{value} = _#{value};
-            #{make_tab gen(ast.scope, ctx), '  '}
+            #{make_tab gen(ast.scope, ctx), '  '};
           }
           """
         when 'hash'
@@ -337,7 +337,7 @@ class @Gen_context
           #   aux_v = ",#{gen ast.v, ctx}"
           # """
           # for #{aux_k}#{aux_v} of #{gen ast.t, ctx}
-          #   #{make_tab gen(ast.scope, ctx), '  '}
+          #   #{make_tab gen(ast.scope, ctx), '  '};
           # """
         when 'hash_int'
           uid = ctx.var_uid++
@@ -346,15 +346,15 @@ class @Gen_context
           aux_k = ""
           aux_v = ""
           if ast.k
-            aux_k = "#{gen ast.k, ctx} = #{pair}.getKey()"
+            aux_k = "#{gen ast.k, ctx} = #{pair}.getKey();"
           if ast.v
-            aux_v = "#{gen ast.v, ctx} = #{pair}.getValue()"
+            aux_v = "#{gen ast.v, ctx} = #{pair}.getValue();"
           
           """
-          for(Map.Entry<int, #{type_recast ast.t.nest_list[0]}> #{pair} : #{gen ast.t, ctx}) {
+          for(Map.Entry<int, #{type_recast ast.t.type.nest_list[0]}> #{pair} : #{gen ast.t, ctx}) {
             #{aux_k}
             #{aux_v}
-            #{make_tab gen(ast.scope, ctx), '  '}
+            #{make_tab gen(ast.scope, ctx), '  '};
           }
           """
       
