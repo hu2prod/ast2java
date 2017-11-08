@@ -179,10 +179,35 @@ class @Gen_context
       "#{gen(ast.t, ctx)}.#{ast.name}"
     
     when "Fn_call"
-      jl = []
-      for v in ast.arg_list
-        jl.push gen v, ctx
-      "#{gen ast.fn, ctx}(#{jl.join ', '})"
+      ret = ""
+      if ast.fn.constructor.name == 'Field_access'
+        t = ast.fn.t
+        ret = switch t.type.main
+          # TODO array
+          # TODO hash
+          when 'hash_int'
+            switch ast.fn.name
+              when 'new'
+                "#{gen t, ctx} = new #{type_recast ast.fn.t.type}()"
+              when 'add'
+                "#{gen t, ctx}.put(#{gen ast.arg_list[0], ctx}, #{gen ast.arg_list[1], ctx})"
+              when 'remove_idx'
+                "#{gen t, ctx}.remove(#{gen ast.arg_list[0], ctx})"
+              when 'idx'
+                "#{gen t, ctx}.get(#{gen ast.arg_list[0], ctx})"
+              else
+                throw new Error "unsupported #{t.type.main} method '#{ast.fn.name}'"
+          else
+            if ast.fn.name == 'new'
+              "#{gen t, ctx} = new #{t.type.main}()"
+            else
+              ""
+      if !ret
+        jl = []
+        for v in ast.arg_list
+          jl.push gen v, ctx
+        ret = "#{gen ast.fn, ctx}(#{jl.join ', '})"
+      ret
     # ###################################################################################################
     #    stmt
     # ###################################################################################################
