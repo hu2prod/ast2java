@@ -174,7 +174,7 @@ class @Gen_context
         if ast.op == 'INDEX_ACCESS'
           ret = switch ta
             when "array"
-              "(#{_a})[#{_b}]"
+              "(#{_a}).get(#{_b})"
             else
               throw new Error "can't compile INDEX_ACCESS for '#{ast.a.type}'"
           break
