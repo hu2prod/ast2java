@@ -291,13 +291,8 @@ class @Gen_context
           #{aux_incr}
           #{value} = _#{value};
           #{make_tab gen(ast.scope, ctx), '  '}
+        }
         """
-        # """
-        # for (#{iterator} = 0; #{iterator} < list.size(); #{iterator}++) {
-        #   #{value} = list.get(#{iterator});
-        #   #{make_tab gen(ast.scope, ctx), '  '}
-        # }
-        # """
       else
         if ast.k
           aux_k = gen ast.k, ctx
