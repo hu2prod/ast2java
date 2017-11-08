@@ -108,8 +108,10 @@ class @Gen_context
     # ###################################################################################################
     when "Const"
       switch ast.type.main
-        when 'bool', 'int', 'float'
+        when 'bool', 'int'
           ast.val
+        when 'float'
+          "#{ast.val}f"
         when 'string'
           JSON.stringify ast.val
     
