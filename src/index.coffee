@@ -191,6 +191,8 @@ class @Gen_context
             switch ast.fn.name
               when 'new'
                 "#{gen t, ctx} = new #{type_recast ast.fn.t.type}()"
+              when 'push'
+                "#{gen t, ctx}.add(#{gen ast.arg_list[0], ctx})"
           
           when 'hash_int'
             switch ast.fn.name
