@@ -96,6 +96,7 @@ type_recast = (t)->
 
 class @Gen_context
   in_class : false
+  var_uid : 0
   mk_nest : ()->
     t = new module.Gen_context
     t
@@ -253,19 +254,35 @@ class @Gen_context
       # for #{gen ast.i, ctx} in [#{gen ast.a, ctx} #{ranger} #{gen ast.b, ctx}]#{aux_step}
     
     when "For_col"
+      var_uid
       if ast.t.type.main == 'array'
         if ast.v
-          aux_v = gen ast.v, ctx
+          value = gen ast.v, ctx
         else
-          aux_v = "_skip"
+          throw new Error "not supported"
+          # value = "_v_#{ctx.var_uid+}"
         
-        aux_k = ""
+        aux_init = ""
+        aux_incr = ""
         if ast.k
-          aux_k = ",#{gen ast.k, ctx}"
+          iterator = "#{gen ast.k, ctx}"
+          aux_init = "#{iterator} = -1"
+          aux_incr = "#{iterator}++"
+        # else
+          # iterator = "_i_#{ctx.var_uid+}"
         """
-        for #{aux_v}#{aux_k} in #{gen ast.t, ctx}
+        #{aux_init}
+        for(#{value} : #{gen ast.t, ctx}) {
+          #{aux_incr}
           #{make_tab gen(ast.scope, ctx), '  '}
+        }
         """
+        # """
+        # for (#{iterator} = 0; #{iterator} < list.size(); #{iterator}++) {
+        #   #{value} = list.get(#{iterator});
+        #   #{make_tab gen(ast.scope, ctx), '  '}
+        # }
+        # """
       else
         if ast.k
           aux_k = gen ast.k, ctx
