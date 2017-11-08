@@ -114,6 +114,7 @@ type_recast = (t)->
 
 class @Gen_context
   in_class : false
+  var_uid : 0
   mk_nest : ()->
     t = new module.Gen_context
     t
@@ -274,17 +275,35 @@ class @Gen_context
     
     when "For_col"
       if ast.t.type.main == 'array'
+        uid = ctx.var_uid++
+        aux_init = ""
+        list = "_list_#{uid}"
+        aux_value_set = ""
         if ast.v
-          aux_v = gen ast.v, ctx
-        else
-          aux_v = "_skip"
+          value = gen ast.v, ctx
+          aux_value_set = "#{value} = #{list}.get(#{iterator});"
         
-        aux_k = ""
+        aux_type = ""
         if ast.k
-          aux_k = ",#{gen ast.k, ctx}"
+          iterator = "#{gen ast.k, ctx}"
+        else
+          iterator = "_i_#{uid}"
+          aux_type = "int "
+        # """
+        # #{aux_init}
+        # for(#{type_recast ast.t.type.nest_list[0]} #{value} : #{gen ast.t, ctx}) {
+        #   #{aux_incr}
+        #   #{make_tab gen(ast.scope, ctx), '  '}
+        # }
+        # """
+        # NOTE NOT optimal
         """
-        for #{aux_v}#{aux_k} in #{gen ast.t, ctx}
+        #{aux_init}
+        #{type_recast ast.t.type} #{list} = #{gen ast.t, ctx}
+        for (#{aux_type}#{iterator} = 0; #{iterator} < #{list}.size(); #{iterator}++) {
+          #{aux_value_set}
           #{make_tab gen(ast.scope, ctx), '  '}
+        }
         """
       else
         if ast.k
