@@ -1,4 +1,5 @@
 require 'fy/codegen'
+Type = require 'type'
 
 module = @
 @bin_op_name_map =
