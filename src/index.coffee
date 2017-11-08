@@ -187,6 +187,11 @@ class @Gen_context
         ret = switch t.type.main
           # TODO array
           # TODO hash
+          when 'array'
+            switch ast.fn.name
+              when 'new'
+                "#{gen t, ctx} = new #{type_recast ast.fn.t.type}()"
+          
           when 'hash_int'
             switch ast.fn.name
               when 'new'
