@@ -275,17 +275,29 @@ class @Gen_context
     when "For_col"
       if ast.t.type.main == 'array'
         if ast.v
-          aux_v = gen ast.v, ctx
+          value = gen ast.v, ctx
         else
-          aux_v = "_skip"
+          value = "_v_#{ctx.var_uid++}"
         
-        aux_k = ""
+        aux_init = ""
+        aux_incr = ""
         if ast.k
-          aux_k = ",#{gen ast.k, ctx}"
+          iterator = "#{gen ast.k, ctx}"
+          aux_init = "#{iterator} = -1"
+          aux_incr = "#{iterator}++"
         """
-        for #{aux_v}#{aux_k} in #{gen ast.t, ctx}
+        #{aux_init}
+        for(#{type_recast ast.t.type.nest_list[0]} _#{value} : #{gen ast.t, ctx}) {
+          #{aux_incr}
+          #{value} = _#{value}
           #{make_tab gen(ast.scope, ctx), '  '}
         """
+        # """
+        # for (#{iterator} = 0; #{iterator} < list.size(); #{iterator}++) {
+        #   #{value} = list.get(#{iterator});
+        #   #{make_tab gen(ast.scope, ctx), '  '}
+        # }
+        # """
       else
         if ast.k
           aux_k = gen ast.k, ctx
