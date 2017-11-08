@@ -107,7 +107,7 @@ type_recast = (t)->
   t.main = recast_hash[t.main] or t.main
   if t.main == 'hash_int'
     t.main = 'HashMap'
-    t.nest_list.unshift new Type 'int'
+    t.nest_list.unshift new Type 'Integer'
   # if !t.main = recast_hash[t.main]    # За такий код потрібно яйця відкручувати. Хоч би дужки поставив.
   #   throw new Error "Can't recast #{t.main} in Rust"
   for field,k in t.nest_list
@@ -351,7 +351,7 @@ class @Gen_context
             aux_v = "#{gen ast.v, ctx} = #{pair}.getValue();"
           
           """
-          for(Map.Entry<int, #{type_recast ast.t.type.nest_list[0]}> #{pair} : #{gen ast.t, ctx}) {
+          for(Map.Entry<Integer, #{type_recast ast.t.type.nest_list[0]}> #{pair} : #{gen ast.t, ctx}.entrySet()) {
             #{aux_k}
             #{aux_v}
             #{make_tab gen(ast.scope, ctx), '  '};
@@ -386,7 +386,7 @@ class @Gen_context
       ctx_nest.in_class = true
       """
       class #{ast.name} {
-        #{make_tab gen(ast.scope, ctx_nest), '  '}
+        #{make_tab gen(ast.scope, ctx_nest), '  '};
       }
       """
     
