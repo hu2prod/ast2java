@@ -522,7 +522,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a = (a as int).pow(2 as u32); a}
+      a = Math.pow(a, 2)
     """
   
   it "var a = 5.5; a **= 2", ->
@@ -541,8 +541,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5.5);
-      {a = (a as float).powi(2); a}
+      a = 5.5f;
+      a = Math.pow(a, 2)
     """
   
   it "var a = 5; a **= 2.5", ->
@@ -561,8 +561,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5 as float);
-      {a = (a as float).powf(2.5); a}
+      a = 5;
+      a = Math.pow(a, 2.5f)
     """
   
   it "var a = 5.5; a **= 2.5", ->
@@ -581,8 +581,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5.5);
-      {a = (a as float).powf(2.5); a}
+      a = 5.5f;
+      a = Math.pow(a, 2.5f)
     """
   
   it "var a = 5; a &= 3", ->

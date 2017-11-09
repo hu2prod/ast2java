@@ -56,6 +56,7 @@ module = @
   ASS_MUL       : (a, b)-> "#{a} *= #{b}"
   ASS_DIV       : (a, b)-> "#{a} /= #{b}"
   ASS_MOD       : (a, b)-> "#{a} %= #{b}"
+  ASS_POW       : (a, b)-> "#{a} = Math.pow(#{a}, #{b})"
   ASS_BIT_AND   : (a, b)-> "#{a} &= #{b}"
   ASS_BIT_OR    : (a, b)-> "#{a} |= #{b}"
   ASS_BIT_XOR   : (a, b)-> "#{a} ^= #{b}"
