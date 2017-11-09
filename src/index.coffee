@@ -223,9 +223,9 @@ class @Gen_context
             else
               ""
       else
-        ret = switch ast.fn.name
-          when "round"
-            "Math.round(#{gen ast.arg_list[0], ctx})"
+        ret = switch t = ast.fn.name
+          when "round", "floor", "ceil", "abs"
+            "Math.#{t}(#{gen ast.arg_list[0], ctx})"
       if !ret
         jl = []
         for v in ast.arg_list

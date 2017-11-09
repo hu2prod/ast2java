@@ -943,6 +943,18 @@ describe 'index section', ->
     assert.equal gen(scope), 'Math.round(2.71f)'
     return
   
+  it 'abs(-27)', ->
+    scope = new ast.Scope
+    f = new ast.Var
+    f.name = "abs"
+    f.type = new Type "function<int,int>"
+    c = cst "int", "-27"
+    scope.list.push t = new ast.Fn_call
+    t.fn = f
+    t.arg_list.push c
+    assert.equal gen(scope), 'Math.abs(-27)'
+    return
+  
   # ###################################################################################################
   #    stmt
   # ###################################################################################################
