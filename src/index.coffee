@@ -409,7 +409,7 @@ class @Gen_context
       ctx_nest.in_class = true
       """
       class #{ast.name} {
-        #{make_tab gen(ast.scope, ctx_nest), '  '};
+        #{make_tab gen(ast.scope, ctx_nest), '  '}#{if ast.scope.list.length then ';' else ''}
       }
       """
     
