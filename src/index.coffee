@@ -65,7 +65,7 @@ module = @
   ASS_BOOL_XOR  : (a, b)-> "#{a} ^= #{b}"
   ASS_SHR       : (a, b)-> "#{a} >>= #{b}"
   ASS_SHL       : (a, b)-> "#{a} <<= #{b}"
-  ASS_LSR       : (a, b)-> "#{a} >>= #{b}" # minor flaw
+  ASS_LSR       : (a, b)-> "#{a} >>>= #{b}"
 
 # @pow = (a, b, ta, tb) ->
 #   if tb == "int"
