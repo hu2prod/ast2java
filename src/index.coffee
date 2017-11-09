@@ -222,6 +222,10 @@ class @Gen_context
               "#{gen t, ctx} = new #{t.type.main}()"
             else
               ""
+      else
+        ret = switch ast.fn.name
+          when "round"
+            "Math.round(#{gen ast.arg_list[0], ctx})"
       if !ret
         jl = []
         for v in ast.arg_list

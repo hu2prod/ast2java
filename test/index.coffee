@@ -930,6 +930,19 @@ describe 'index section', ->
     t.arg_list.push c
     assert.equal gen(scope), 'f(5)'
     return
+  
+  it 'round(2.71)', ->
+    scope = new ast.Scope
+    f = new ast.Var
+    f.name = "round"
+    f.type = new Type "function<int,float>"
+    c = cst "float", "2.71"
+    scope.list.push t = new ast.Fn_call
+    t.fn = f
+    t.arg_list.push c
+    assert.equal gen(scope), 'Math.round(2.71f)'
+    return
+  
   # ###################################################################################################
   #    stmt
   # ###################################################################################################
