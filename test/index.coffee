@@ -161,7 +161,7 @@ describe 'index section', ->
     scope = new ast.Scope
     c = cst "int", "5"
     scope.list.push un(c, "BIT_NOT")
-    assert.equal gen(scope), "!(5)"
+    assert.equal gen(scope), "~(5)"
     return
   
   it "var a = 5; a++", ->
@@ -173,7 +173,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {let __copy_a = a; a += 1; __copy_a}
+      (a)++
     """
   
   it "var a = 5; a--", ->
@@ -185,7 +185,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {let __copy_a = a; a -= 1; __copy_a}
+      (a)--
     """
   
   it "var a = 5; ++a", ->
@@ -197,7 +197,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a += 1; a}
+      ++(a)
     """
   
   it "var a = 5; --a", ->
@@ -209,7 +209,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a -= 1; a}
+      --(a)
     """
   
   # TODO refactoring

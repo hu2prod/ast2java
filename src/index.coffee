@@ -87,12 +87,12 @@ module = @
 #   "{#{a} = #{module.pow a, b, ta, tb}; a}"
 
 @un_op_name_cb_map =
-  INC_RET : (a)->"{#{a} += 1; #{a}}"
-  RET_INC : (a)->"{let __copy_#{a} = #{a}; #{a} += 1; __copy_#{a}}"
-  DEC_RET : (a)->"{#{a} -= 1; #{a}}"
-  RET_DEC : (a)->"{let __copy_#{a} = #{a}; #{a} -= 1; __copy_#{a}}"
+  INC_RET : (a)->"++(#{a})"
+  RET_INC : (a)->"(#{a})++"
+  DEC_RET : (a)->"--(#{a})"
+  RET_DEC : (a)->"(#{a})--"
   BOOL_NOT: (a)->"!(#{a})"
-  BIT_NOT : (a)->"!(#{a})"
+  BIT_NOT : (a)->"~(#{a})"
   MINUS   : (a)->"-(#{a})"
   PLUS    : (a)->"Float.parseFloat(#{a})"
 
