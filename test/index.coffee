@@ -17,7 +17,7 @@ var_d = (name, scope, _type='int')->
   t.type = type _type
   t
 
-_var = (name, scope, _type='int')->
+_var = (name, _type='int')->
   t = new ast.Var
   t.name = name
   t.type = type _type
@@ -62,7 +62,7 @@ fnd = (name, _type, arg_name_list, scope_list)->
   t.scope.list = scope_list
   t
 
-fa = (target, name, _type)->
+fa = (target, name, _type)-> # a.b: a - target, b - name
   t = new ast.Field_access
   t.t = target
   t.name = name
@@ -872,6 +872,24 @@ describe 'index section', ->
     # t.list.push c
     # assert.equal gen(scope), "vec![1]"
     # return
+  
+  it 'var a:array<int>; a.sort_by_f((a)->-a)', ->
+    scope = new ast.Scope
+    var_d "a", scope, "array<int>"
+    b = fa _var("a", "array<int>"), "sort_by_f", "function<void,function<float,int>>"
+    arg = fnd("", "function<float,int>", ["a"], [])
+    scope.list.push t = new ast.Fn_call
+    t.fn = b
+    t.arg_list.push arg
+    # pp scope
+    assert.equal gen(scope), """
+      ArrayList<Integer> a;
+      Function<Integer, Float> _sort_by0 = (a)-> {
+        
+      };
+      Collections.sort(a, (_a, _b) ->_sort_by0.apply(_a) - _sort_by0.apply(_b))
+    """
+    return
   
   # it '{}', ()->
   #   scope = new ast.Scope
