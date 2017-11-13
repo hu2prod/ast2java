@@ -213,7 +213,6 @@ class @Gen_context
       ret = ""
       if ast.fn.constructor.name == 'Field_access'
         t = ast.fn.t
-        p "HERE1 #{t.type}"
         ret = switch t.type.main
           # TODO array
           # TODO hash
