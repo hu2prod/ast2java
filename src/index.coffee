@@ -225,6 +225,10 @@ class @Gen_context
                 "#{gen t, ctx}.add(#{gen ast.arg_list[0], ctx})"
               when 'length_get'
                 "#{gen t, ctx}.size()"
+              when 'length_set'
+                throw new Error "You can't do length_set in java"
+              when 'has'
+                "#{gen t, ctx}.contains(#{gen ast.arg_list[0], ctx})"
               when 'sort_by_f'
                 ctx_nest = ctx.mk_nest()
                 ctx_nest.is_lambda = true
