@@ -56,6 +56,7 @@ module = @
   ASS_MUL       : (a, b)-> "#{a} *= #{b}"
   ASS_DIV       : (a, b)-> "#{a} /= #{b}"
   ASS_MOD       : (a, b)-> "#{a} %= #{b}"
+  ASS_POW       : (a, b)-> "#{a} = Math.pow(#{a}, #{b})"
   ASS_BIT_AND   : (a, b)-> "#{a} &= #{b}"
   ASS_BIT_OR    : (a, b)-> "#{a} |= #{b}"
   ASS_BIT_XOR   : (a, b)-> "#{a} ^= #{b}"
@@ -64,7 +65,7 @@ module = @
   ASS_BOOL_XOR  : (a, b)-> "#{a} ^= #{b}"
   ASS_SHR       : (a, b)-> "#{a} >>= #{b}"
   ASS_SHL       : (a, b)-> "#{a} <<= #{b}"
-  ASS_LSR       : (a, b)-> "#{a} >>= #{b}" # minor flaw
+  ASS_LSR       : (a, b)-> "#{a} >>>= #{b}"
 
 # @pow = (a, b, ta, tb) ->
 #   if tb == "int"
@@ -86,12 +87,12 @@ module = @
 #   "{#{a} = #{module.pow a, b, ta, tb}; a}"
 
 @un_op_name_cb_map =
-  INC_RET : (a)->"{#{a} += 1; #{a}}"
-  RET_INC : (a)->"{let __copy_#{a} = #{a}; #{a} += 1; __copy_#{a}}"
-  DEC_RET : (a)->"{#{a} -= 1; #{a}}"
-  RET_DEC : (a)->"{let __copy_#{a} = #{a}; #{a} -= 1; __copy_#{a}}"
+  INC_RET : (a)->"++(#{a})"
+  RET_INC : (a)->"(#{a})++"
+  DEC_RET : (a)->"--(#{a})"
+  RET_DEC : (a)->"(#{a})--"
   BOOL_NOT: (a)->"!(#{a})"
-  BIT_NOT : (a)->"!(#{a})"
+  BIT_NOT : (a)->"~(#{a})"
   MINUS   : (a)->"-(#{a})"
   PLUS    : (a)->"Float.parseFloat(#{a})"
   IS_NOT_NULL: (a)->"(#{a} != null)"
@@ -103,12 +104,29 @@ recast_hash =
   'string': 'String'
   'array' : 'ArrayList'
 
+recast2_hash =
+  'int'   : 'Integer'
+  'float' : 'Float'
+
 type_recast = (t)->
   t = t.clone()
   t.main = recast_hash[t.main] or t.main
   if t.main == 'hash_int'
     t.main = 'HashMap'
     t.nest_list.unshift new Type 'Integer'
+  if t.main == 'ArrayList'
+    for v in t.nest_list
+      v.main = recast2_hash[v.main] or v.main
+  if t.main == "function"
+    for v in t.nest_list
+      v.main = recast2_hash[v.main] or v.main
+    ret = t.nest_list.shift()
+    t.main = switch t.nest_list.length
+      when 1
+        "Function"
+      else
+        throw new Error "[type_recast] Can't compile lambda with non-1 or 2 arguments"
+    t.nest_list.push ret
   # if !t.main = recast_hash[t.main]    # За такий код потрібно яйця відкручувати. Хоч би дужки поставив.
   #   throw new Error "Can't recast #{t.main} in Rust"
   for field,k in t.nest_list
@@ -205,7 +223,15 @@ class @Gen_context
                 "#{gen t, ctx} = new #{type_recast ast.fn.t.type}()"
               when 'push'
                 "#{gen t, ctx}.add(#{gen ast.arg_list[0], ctx})"
-          
+              when 'sort_by_f'
+                ctx_nest = ctx.mk_nest()
+                ctx_nest.is_lambda = true
+                uid = ctx.var_uid++
+                """
+                #{type_recast ast.fn.type.nest_list[1]} _sort_by#{uid} = #{gen ast.arg_list[0], ctx_nest};
+                Collections.sort(#{gen t, ctx}, (_a, _b) ->_sort_by#{uid}.apply(_a) - _sort_by#{uid}.apply(_b))
+                """
+
           when 'hash_int'
             switch ast.fn.name
               when 'new'
@@ -223,6 +249,10 @@ class @Gen_context
               "#{gen t, ctx} = new #{t.type.main}()"
             else
               ""
+      else
+        ret = switch t = ast.fn.name
+          when "round", "floor", "ceil", "abs"
+            "Math.#{t}(#{gen ast.arg_list[0], ctx})"
       if !ret
         jl = []
         for v in ast.arg_list
@@ -405,21 +435,36 @@ class @Gen_context
       ctx_nest.in_class = true
       """
       class #{ast.name} {
-        #{make_tab gen(ast.scope, ctx_nest), '  '};
+        #{make_tab gen(ast.scope, ctx_nest), '  '}#{if ast.scope.list.length then ';' else ''}
       }
       """
     
     when "Fn_decl"
-      arg_list = ast.arg_name_list
       sgnt_list = ast.type.nest_list
-      sgnt_string = "("
-      for t, i in sgnt_list[1..]
-        sgnt_string += ", " if i != 0
-        sgnt_string += "#{type_recast t} #{arg_list[i]}"
-      sgnt_string += ")"
-      """
-      public #{type_recast sgnt_list[0]} #{ast.name}#{sgnt_string} {
-        #{make_tab gen(ast.scope, ctx), '  '}#{if ast.scope.list.length then ';' else ''}
-      }
+      # sgnt_string = "("
+      # for t, i in sgnt_list[1..]
+      #   sgnt_string += ", " if i != 0
+      #   sgnt_string += "#{type_recast t} #{arg_list[i]}"
+      # sgnt_string += ")"
+
+      
+      if ctx.is_lambda
+        arg_list = []
+        for t,i in sgnt_list[1..]
+          arg_list.push "#{ast.arg_name_list[i]}"
+        """
+        (#{arg_list.join ', '})-> {
+          #{make_tab gen(ast.scope, ctx.mk_nest()), '  '}#{if ast.scope.list.length then ';' else ''}
+        }
+        """
+      else
+        arg_list = []
+        for t,i in sgnt_list[1..]
+          arg_list.push "#{type_recast t} #{ast.arg_name_list[i]}"
+
+        """
+        public #{type_recast sgnt_list[0]} #{ast.name}(#{arg_list.join ', '}) {
+          #{make_tab gen(ast.scope, ctx.mk_nest()), '  '}#{if ast.scope.list.length then ';' else ''}
+        }
       """
     

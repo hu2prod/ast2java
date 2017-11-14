@@ -17,7 +17,7 @@ var_d = (name, scope, _type='int')->
   t.type = type _type
   t
 
-_var = (name, scope, _type='int')->
+_var = (name, _type='int')->
   t = new ast.Var
   t.name = name
   t.type = type _type
@@ -62,7 +62,7 @@ fnd = (name, _type, arg_name_list, scope_list)->
   t.scope.list = scope_list
   t
 
-fa = (target, name, _type)->
+fa = (target, name, _type)-> # a.b: a - target, b - name
   t = new ast.Field_access
   t.t = target
   t.name = name
@@ -161,7 +161,7 @@ describe 'index section', ->
     scope = new ast.Scope
     c = cst "int", "5"
     scope.list.push un(c, "BIT_NOT")
-    assert.equal gen(scope), "!(5)"
+    assert.equal gen(scope), "~(5)"
     return
   
   it 'a?', ->
@@ -180,7 +180,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {let __copy_a = a; a += 1; __copy_a}
+      (a)++
     """
   
   it "var a = 5; a--", ->
@@ -192,7 +192,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {let __copy_a = a; a -= 1; __copy_a}
+      (a)--
     """
   
   it "var a = 5; ++a", ->
@@ -204,7 +204,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a += 1; a}
+      ++(a)
     """
   
   it "var a = 5; --a", ->
@@ -216,7 +216,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a -= 1; a}
+      --(a)
     """
   
   # TODO refactoring
@@ -529,7 +529,7 @@ describe 'index section', ->
     assert.equal gen(scope), """
       int a;
       a = 5;
-      {a = (a as int).pow(2 as u32); a}
+      a = Math.pow(a, 2)
     """
   
   it "var a = 5.5; a **= 2", ->
@@ -548,8 +548,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5.5);
-      {a = (a as float).powi(2); a}
+      a = 5.5f;
+      a = Math.pow(a, 2)
     """
   
   it "var a = 5; a **= 2.5", ->
@@ -568,8 +568,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5 as float);
-      {a = (a as float).powf(2.5); a}
+      a = 5;
+      a = Math.pow(a, 2.5f)
     """
   
   it "var a = 5.5; a **= 2.5", ->
@@ -588,8 +588,8 @@ describe 'index section', ->
     
     assert.equal gen(scope), """
       float a;
-      (a = 5.5);
-      {a = (a as float).powf(2.5); a}
+      a = 5.5f;
+      a = Math.pow(a, 2.5f)
     """
   
   it "var a = 5; a &= 3", ->
@@ -880,6 +880,24 @@ describe 'index section', ->
     # assert.equal gen(scope), "vec![1]"
     # return
   
+  it 'var a:array<int>; a.sort_by_f((a)->-a)', ->
+    scope = new ast.Scope
+    var_d "a", scope, "array<int>"
+    b = fa _var("a", "array<int>"), "sort_by_f", "function<void,function<float,int>>"
+    arg = fnd("", "function<float,int>", ["a"], [])
+    scope.list.push t = new ast.Fn_call
+    t.fn = b
+    t.arg_list.push arg
+    # pp scope
+    assert.equal gen(scope), """
+      ArrayList<Integer> a;
+      Function<Integer, Float> _sort_by0 = (a)-> {
+        
+      };
+      Collections.sort(a, (_a, _b) ->_sort_by0.apply(_a) - _sort_by0.apply(_b))
+    """
+    return
+  
   # it '{}', ()->
   #   scope = new ast.Scope
   #   scope.list.push t = new ast.Hash_init
@@ -937,6 +955,31 @@ describe 'index section', ->
     t.arg_list.push c
     assert.equal gen(scope), 'f(5)'
     return
+  
+  it 'round(2.71)', ->
+    scope = new ast.Scope
+    f = new ast.Var
+    f.name = "round"
+    f.type = new Type "function<int,float>"
+    c = cst "float", "2.71"
+    scope.list.push t = new ast.Fn_call
+    t.fn = f
+    t.arg_list.push c
+    assert.equal gen(scope), 'Math.round(2.71f)'
+    return
+  
+  it 'abs(-27)', ->
+    scope = new ast.Scope
+    f = new ast.Var
+    f.name = "abs"
+    f.type = new Type "function<int,int>"
+    c = cst "int", "-27"
+    scope.list.push t = new ast.Fn_call
+    t.fn = f
+    t.arg_list.push c
+    assert.equal gen(scope), 'Math.abs(-27)'
+    return
+  
   # ###################################################################################################
   #    stmt
   # ###################################################################################################
