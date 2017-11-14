@@ -94,6 +94,7 @@ module = @
   BIT_NOT : (a)->"!(#{a})"
   MINUS   : (a)->"-(#{a})"
   PLUS    : (a)->"Float.parseFloat(#{a})"
+  IS_NOT_NULL: (a)->"(#{a} != null)"
 
 recast_hash =
   'bool'  : 'boolean'

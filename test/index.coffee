@@ -164,6 +164,13 @@ describe 'index section', ->
     assert.equal gen(scope), "!(5)"
     return
   
+  it 'a?', ->
+    scope = new ast.Scope
+    c = cst "int", "1"
+    scope.list.push un(c, "IS_NOT_NULL")
+    assert.equal gen(scope), "(1 != null)"
+    return
+  
   it "var a = 5; a++", ->
     scope = new ast.Scope
     a = var_d "a", scope
