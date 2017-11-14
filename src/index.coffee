@@ -194,6 +194,8 @@ class @Gen_context
           ret = switch ta
             when "array"
               "(#{_a}).get(#{_b})"
+            when "hash_int"
+              "(#{_a}).get(#{_b})"
             else
               throw new Error "can't compile INDEX_ACCESS for '#{ast.a.type}'"
           break
