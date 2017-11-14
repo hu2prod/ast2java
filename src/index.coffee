@@ -223,6 +223,8 @@ class @Gen_context
                 "#{gen t, ctx} = new #{type_recast ast.fn.t.type}()"
               when 'push'
                 "#{gen t, ctx}.add(#{gen ast.arg_list[0], ctx})"
+              when 'length_get'
+                "#{gen t, ctx}.size()"
               when 'sort_by_f'
                 ctx_nest = ctx.mk_nest()
                 ctx_nest.is_lambda = true
