@@ -449,14 +449,8 @@ class @Gen_context
     
     when "Fn_decl"
       sgnt_list = ast.type.nest_list
-      # sgnt_string = "("
-      # for t, i in sgnt_list[1..]
-      #   sgnt_string += ", " if i != 0
-      #   sgnt_string += "#{type_recast t} #{arg_list[i]}"
-      # sgnt_string += ")"
-
       
-      if ctx.is_lambda
+      if ctx.is_lambda or ast.is_closure
         arg_list = []
         for t,i in sgnt_list[1..]
           arg_list.push "#{ast.arg_name_list[i]}"
