@@ -231,13 +231,21 @@ class @Gen_context
                 throw new Error "You can't do length_set in java"
               when 'has'
                 "#{gen t, ctx}.contains(#{gen ast.arg_list[0], ctx})"
-              when 'sort_by_f'
+              when 'sort_by_i'
                 ctx_nest = ctx.mk_nest()
                 ctx_nest.is_lambda = true
                 uid = ctx.var_uid++
                 """
                 #{type_recast ast.fn.type.nest_list[1]} _sort_by#{uid} = #{gen ast.arg_list[0], ctx_nest};
                 Collections.sort(#{gen t, ctx}, (_a, _b) ->_sort_by#{uid}.apply(_a) - _sort_by#{uid}.apply(_b))
+                """
+              when 'sort_by_f'
+                ctx_nest = ctx.mk_nest()
+                ctx_nest.is_lambda = true
+                uid = ctx.var_uid++
+                """
+                #{type_recast ast.fn.type.nest_list[1]} _sort_by#{uid} = #{gen ast.arg_list[0], ctx_nest};
+                Collections.sort(#{gen t, ctx}, (_a, _b) ->(int)Math.signum(_sort_by#{uid}.apply(_a) - _sort_by#{uid}.apply(_b)))
                 """
 
           when 'hash_int'
